@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom'
 
  const ActivityList: React.FC = () => {
     const activityStore = useContext(ActivityStore);
-    const {activitiesByDate, selectActivity, deleteActivity, submitting, target} = activityStore;
+    const {activitiesByDate, deleteActivity, submitting, target} = activityStore;
     return (
         <Segment clearing>
             <Item.Group divided>
-                {activitiesByDate.map((activity) => (
+                {activitiesByDate.map((activity) => ( 
                     <Item key={activity.id}>
                         <Item.Content>
                             <Item.Header as='a'>{activity.title}</Item.Header>

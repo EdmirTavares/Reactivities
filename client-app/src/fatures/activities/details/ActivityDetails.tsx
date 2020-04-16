@@ -12,11 +12,11 @@ interface DetailParams {
 const ActivityDetails: React.FC<RouteComponentProps<DetailParams>> = ({match, history}) => {
 
     const activityStore = useContext(ActivityStore)
-    const {activity, openEditForm, cancelSelectedActivty, loadActivity, loadingInitial} = activityStore
+    const {activity, loadActivity, loadingInitial} = activityStore
 
     useEffect(() => {
         loadActivity(match.params.id)
-    },[loadActivity])
+    },[loadActivity, match.params.id])
 
     if(loadingInitial || !activity) return <LoadingComponent content='Loading activity...' />
     

@@ -6,7 +6,6 @@ import {v4 as uuid} from 'uuid'
 import ActivityStore from '../../../app/stores/activityStore'
 import { observer } from 'mobx-react-lite'
 import { RouteComponentProps } from 'react-router-dom'
-import LoadingComponent from '../../../app/layout/LoadingComponent'
 
 interface DetailParams {
     id: string
@@ -19,25 +18,12 @@ interface DetailParams {
         createActivity, 
         editActivity, 
         submitting, 
-        cancelFormOpen, 
         activity: initializeFormState, 
         loadActivity, 
-        loadingInitial,
         clearActivity
     } = activityStore;
 
-    useEffect(() => {
-        if(match.params.id){
-            loadActivity(match.params.id).then(
-                () => initializeFormState && setActivity(initializeFormState)
-            );
-        }
-        return () => {
-            clearActivity()
-        }
-        
-    },[loadActivity, match.params.id, clearActivity, initializeFormState])
-
+  
 
     const [activity, setActivity] = useState<IActivity>({
         id: '',
@@ -49,17 +35,28 @@ interface DetailParams {
         venue: ''
     });
 
+    useEffect(() => {
+        if(match.params.id && activity.id.length === 0){
+            loadActivity(match.params.id).then(
+                () => initializeFormState && setActivity(initializeFormState)
+            );
+        }
+        return () => {
+            clearActivity()
+        }
+        
+    },[loadActivity, match.params.id, clearActivity, initializeFormState,activity.id.length])
+
     const handleSubmit =  () => {
         if (activity.id.length === 0) {
             let newActivity = {
                 ...activity,
                 id: uuid()
             }
-             createActivity(newActivity)
-         
+             createActivity(newActivity).then(() =>  history.push(`/activities/${newActivity.id}`))
+            
         } else {
-             editActivity(activity)
-           
+             editActivity(activity).then(() =>  history.push(`/activities/${activity.id}`))
         }
     }
 
@@ -79,7 +76,7 @@ interface DetailParams {
                 <Form.Input onChange={handleInputChange} placeholder='City' name='city' value={activity.city} />
                 <Form.Input onChange={handleInputChange} placeholder='Venue' name='venue' value={activity.venue} />
                 <Button  loading={submitting} floated='right' positive type='submit' content='Submit' />
-                <Button floated='right' type='button' content='Cancel' onClick={()=>{ history.push(`/activities/${activity.id}`)}} />
+                <Button floated='right' type='button' content='Cancel' onClick={()=>{ history.push('/activities')}} />
             </Form>
         </Segment>
     )
