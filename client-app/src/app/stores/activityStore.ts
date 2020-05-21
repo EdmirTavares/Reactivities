@@ -41,7 +41,6 @@ class ActivityStore {
             runInAction('loading activities error',() => {
                 this.loadingInitial = false
             })            
-            console.log(error)
        }
     }
 
