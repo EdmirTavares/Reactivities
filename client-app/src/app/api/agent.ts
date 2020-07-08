@@ -4,25 +4,26 @@ import { history } from '../..';
 import { toast } from 'react-toastify';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
-axios.interceptors.response.use(undefined,error =>{
-    if(error.message === 'Network Error' && !error.response){
+axios.interceptors.response.use(undefined, error => {
+    if (error.message === 'Network Error' && !error.response) {
         toast.error('Network error - please check your connection!');
     }
-    const {status, data, config} = error.response;
-    if(status === 404){
+    const { status, data, config } = error.response;
+    if (status === 404) {
         history.push('/notfound')
     }
-    if(status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id')){
+    if (status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id')) {
         history.push('/notfound')
     }
-    if(status === 500){
+    if (status === 500) {
         toast.error('Server error - check the terminal for more info!');
     }
+    throw error;
 })
 
 const responseBody = (response: AxiosResponse) => response.data;
 
-const sleep = (ms: number) =>  (response: AxiosResponse) => 
+const sleep = (ms: number) => (response: AxiosResponse) =>
     new Promise<AxiosResponse>(resolve => setTimeout(() => resolve(response), ms))
 
 const requests = {
@@ -35,8 +36,8 @@ const requests = {
 const Activities = {
     list: (): Promise<IActivity[]> => requests.get('/activities'),
     details: (id: string) => requests.get(`/activities/${id}`),
-    create: (activity: IActivity) => requests.post('/activities', activity ),
-    update: (activity: IActivity) => requests.put(`/activities/${activity.id}`, activity ),
+    create: (activity: IActivity) => requests.post('/activities', activity),
+    update: (activity: IActivity) => requests.put(`/activities/${activity.id}`, activity),
     delete: (id: string) => requests.del(`/activities/${id}`)
 }
 
