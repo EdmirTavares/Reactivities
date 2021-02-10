@@ -9,7 +9,7 @@ namespace Application.Activities
         {
             CreateMap<Activity, ActivityDto>();
             CreateMap<UserActivity, AttendeeDto>()
-                .ForMember(d => d.UserNname, o => o.MapFrom(s => s.AppUser.UserName))
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.AppUser.UserName))
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.AppUser.DisplayName));
 
         }
